@@ -1,0 +1,48 @@
+--- a/drivers/amlogic/display/ge2d/ge2d_wq.c	2014-11-24 02:54:32.000000000 +0100
++++ b/drivers/amlogic/display/ge2d/ge2d_wq.c	2014-12-07 02:22:58.402259592 +0100
+@@ -798,7 +798,7 @@
+ 	//context->config.src2_dst_data.ddr_burst_size= 3;
+ 	return  0;
+ }
+-
++EXPORT_SYMBOL(ge2d_context_config_ex);
+ /***********************************************************************
+ ** interface for init  create & destroy work_queue
+ ************************************************************************/
+@@ -840,6 +840,7 @@
+ 	spin_unlock(&ge2d_manager.event.sem_lock);
+ 	return ge2d_work_queue; //find it 
+ }
++EXPORT_SYMBOL(create_ge2d_work_queue);
+ int  destroy_ge2d_work_queue(ge2d_context_t* ge2d_work_queue)
+ {
+ 	ge2d_queue_item_t    	*pitem,*tmp;
+@@ -883,6 +884,7 @@
+ 	
+     	return  -1;	
+ }
++EXPORT_SYMBOL(destroy_ge2d_work_queue);
+ /***********************************************************************
+ ** interface for init and deinit section
+ ************************************************************************/
+--- a/drivers/amlogic/amports/video.c	2014-11-24 02:54:32.000000000 +0100
++++ b/drivers/amlogic/amports/video.c	2014-12-07 02:26:05.135288222 +0100
+@@ -5147,6 +5147,7 @@
+ {
+ 	return  cur_dispbuf;
+ }
++EXPORT_SYMBOL(get_cur_dispbuf);
+ 
+ static void vout_hook(void)
+ {
+--- a/drivers/amlogic/display/ge2d/stretchblt.c	2014-11-24 02:54:32.000000000 +0100
++++ b/drivers/amlogic/display/ge2d/stretchblt.c	2014-12-07 02:30:23.026003358 +0100
+@@ -88,7 +88,7 @@
+ 
+     ge2d_wq_add_work(wq);
+ }
+-
++EXPORT_SYMBOL(stretchblt_noalpha);
+ void stretchblt_noalpha(ge2d_context_t *wq,
+                         int src_x, int src_y, int src_w, int src_h,
+                         int dst_x, int dst_y, int dst_w, int dst_h)
