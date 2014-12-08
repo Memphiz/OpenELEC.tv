@@ -24,10 +24,10 @@ index 444070f..11b9c67 100644
  	clients/boblight-v4l/flagmanager-v4l.cpp \
 diff --git a/src/clients/boblight-aml/boblight-aml.cpp b/src/clients/boblight-aml/boblight-aml.cpp
 new file mode 100644
-index 0000000..cd22380
+index 0000000..da5a85e
 --- /dev/null
 +++ b/src/clients/boblight-aml/boblight-aml.cpp
-@@ -0,0 +1,305 @@
+@@ -0,0 +1,308 @@
 +/*
 + * boblight
 + * Copyright (C) Bob  2009 
@@ -177,6 +177,7 @@ index 0000000..cd22380
 +{
 +  int snapshot_fd = -1;
 +  aml_snapshot_t aml_snapshot = {0};
++  int lastPriority = 255;
 +
 +  aml_snapshot.dst_width  = 160;
 +  aml_snapshot.dst_height = 160;
@@ -213,10 +214,11 @@ index 0000000..cd22380
 +
 +    // match source ratio if possible
 +    if (amvideo_utils_get_position(aml_snapshot) != 0) {
-+      memset((void*)aml_snapshot.dst_vaddr, 0x00, aml_snapshot.dst_size);
-+      frameToboblight(boblight, (uint8_t*)aml_snapshot.dst_vaddr,
-+        aml_snapshot.dst_width, aml_snapshot.dst_height, aml_snapshot.dst_stride);
-+      boblight_sendrgb(boblight, 1, NULL);
++      if ( lastPriority != 255)
++      {
++        boblight_setpriority(boblight, 255);
++        lastPriority = 255;
++      }
 +      sleep(1);
 +      continue;
 +    }
@@ -225,7 +227,11 @@ index 0000000..cd22380
 +      // image to boblight convert.
 +      frameToboblight(boblight, (uint8_t*)aml_snapshot.dst_vaddr,
 +        aml_snapshot.dst_width, aml_snapshot.dst_height, aml_snapshot.dst_stride);
-+
++      if (lastPriority != g_flagmanager.m_priority)
++      {
++        boblight_setpriority(boblight, g_flagmanager.m_priority);
++        lastPriority = g_flagmanager.m_priority;
++      }
 +      if (!boblight_sendrgb(boblight, 1, NULL))
 +      {
 +        // some error happened, probably connection broken, so bitch and try again
@@ -249,13 +255,10 @@ index 0000000..cd22380
 +  }
 +
 +  // last image is black
-+  memset((void*)aml_snapshot.dst_vaddr, 0x00, aml_snapshot.dst_size);
-+  frameToboblight(boblight, (uint8_t*)aml_snapshot.dst_vaddr,
-+    aml_snapshot.dst_width, aml_snapshot.dst_height, aml_snapshot.dst_stride);
-+  boblight_sendrgb(boblight, 1, NULL);
-+
++  boblight_setpriority(boblight, 255);
 +  boblight_destroy(boblight);
 +  close(snapshot_fd);
++  return 0;
 +}
 +
 +/*********************************************************
@@ -303,7 +306,7 @@ index 0000000..cd22380
 +    
 +    //try to connect, if we can't then bitch to stderr and destroy boblight
 +    if (!boblight_connect(boblight, g_flagmanager.m_address, g_flagmanager.m_port, 5000000) ||
-+        !boblight_setpriority(boblight, g_flagmanager.m_priority)) {
++        !boblight_setpriority(boblight, 255)) {
 +      PrintError(boblight_geterror(boblight));
 +      fprintf(stdout, "Waiting 10 seconds before trying again\n");
 +      boblight_destroy(boblight);
