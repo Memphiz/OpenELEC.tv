@@ -46,3 +46,29 @@
  void stretchblt_noalpha(ge2d_context_t *wq,
                          int src_x, int src_y, int src_w, int src_h,
                          int dst_x, int dst_y, int dst_w, int dst_h)
+--- a/drivers/of/fdt.c.orig	2014-12-08 22:46:22.000000000 +0100
++++ b/drivers/of/fdt.c	2014-12-08 22:47:18.836312840 +0100
+@@ -697,6 +697,7 @@
+ 
+ 	return -1;
+ }
++EXPORT_SYMBOL(find_reserve_block);
+ 
+ int find_reserve_block_by_name(char * name)
+ {
+@@ -729,6 +730,7 @@
+ 	
+ 	return addr;
+ }
++EXPORT_SYMBOL(get_reserve_block_addr);
+ 
+ unsigned long long get_reserve_block_size(int blockid)
+ {
+@@ -736,6 +738,7 @@
+ 		printk("error: reserve block count is larger than MAX_RESERVE_BLOCK,please reset the code\n");
+ 	return pReserve_Manager->reserve[blockid].size;
+ }
++EXPORT_SYMBOL(get_reserve_block_size);
+ 
+ 
+ /**
