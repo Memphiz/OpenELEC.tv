@@ -920,7 +920,7 @@ diff -Nru linux-amlogic-3.10.33-9eb2bde.orig/arch/arm/boot/dts/amlogic/meson6_g1
 +		compatible = "amlogic,ppmgr";
 +		dev_name = "ppmgr";
 +		status = "okay";
-+		reserve-memory = <0x01300000>;	// 1280*732*21 = 19,676,160
++		reserve-memory = <0x0AC00000>;	// 1280*732*21 = 19,676,160
 +		reserve-iomap = "true";	
 +	};
 +
