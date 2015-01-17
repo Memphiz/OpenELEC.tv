@@ -1,0 +1,45 @@
+--- a/arch/arm/mach-meson6/clock.orig	2015-01-17 23:58:30.729026387 +0100
++++ b/arch/arm/mach-meson6/clock.c	2015-01-18 00:09:36.045006729 +0100
+@@ -55,7 +55,7 @@
+ static unsigned int freq_limit = 1;
+ 
+ static int set_sys_pll(struct clk *clk,  unsigned long dst);
+-static void get_a9_divid(unsigned int idx, unsigned int * scale_divn, unsigned int * scale_out);
++static void get_a9_divid(unsigned int idx, unsigned int * scale_divn, unsigned int * scale_out);
+ 
+ #define IS_CLK_ERR(a)  (IS_ERR(a) || a == 0)
+ 
+@@ -768,16 +768,16 @@
+ 	
+ 
+ 	if(ret == 0){		
+-	  if (!clk->open_irq)
+-	      spin_lock_irqsave(&clockfw_lock, flags);
+-	  else
++	//  if (!clk->open_irq)
++	//      spin_lock_irqsave(&clockfw_lock, flags);
++	//  else
+ 	      spin_lock(&clockfw_lock);
+ //		printk(KERN_INFO "%s() clk=%p rate=%lu\n", __FUNCTION__, clk, rate);
+ 	  if(clk->set_rate)
+ 	  	ret = clk->set_rate(clk, rate) ;
+-	  if (!clk->open_irq)
+-	      spin_unlock_irqrestore(&clockfw_lock, flags);
+-	  else
++	//  if (!clk->open_irq)
++	//      spin_unlock_irqrestore(&clockfw_lock, flags);
++	//  else
+ 	      spin_unlock(&clockfw_lock);
+ 	}
+ 
+@@ -1395,7 +1395,10 @@
+ 
+ #else
+         if(cpu!=info->cpu){
++            unsigned long flags;
++            local_irq_save(flags);
+             info->err = _clk_set_rate_cpu(info->clk, info->rate, 0);
++            local_irq_restore(flags);
+         }
+ #endif
+ }
